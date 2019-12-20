@@ -18,5 +18,12 @@ namespace ClassLib.Logic
 
             return _dataAccess.LoadEmployees(sql);
         }
+
+        public void SaveEmployee(Employee employee)
+        {
+            const string sql = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Occupation)";
+
+            _dataAccess.SaveEmployee(employee, sql);
+        }
     }
 }

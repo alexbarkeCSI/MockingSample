@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xunit;
 using Moq;
@@ -15,19 +16,25 @@ namespace MockingSample.Tests
     public class EmployeeTests
     {
         [Fact]
-        public void TestMethod1()
+        public void Get_Employees_ValidCall()
         {
             using (var mock = AutoMock.GetLoose())
             {
+                // setup mocked environment
                 mock.Mock<IEmployeeDataAccess>()
                     .Setup(x => x.LoadEmployees("SELECT * FROM Employee"))
                     .Returns(GetSampleEmployees());
 
+                // create the actual class to run the employee get method
                 var cls = mock.Create<EmployeeProcessor>();
+
+                // get sample expected data
                 var expected = GetSampleEmployees();
 
+                // run the get employees method which will instead return dummy data
                 var actual = cls.GetEmployees();
 
+                // do asserts
                 Assert.True(actual != null);
                 Assert.Equal(expected.Count, actual.Count);
 
@@ -38,6 +45,27 @@ namespace MockingSample.Tests
                     Assert.Equal(expected[i].LastName, actual[i].LastName);
                     Assert.Equal(expected[i].Occupation, actual[i].Occupation);
                 }
+            }
+        }
+
+        [Fact]
+        public void Save_Employee_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var employee = GetSampleEmployees().First();
+                var sql = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Occupation)";
+                // setup mocked environment
+                mock.Mock<IEmployeeDataAccess>()
+                    .Setup(x => x.SaveEmployee(employee, sql));
+
+                // create the actual class to run the employee get method
+                var cls = mock.Create<EmployeeProcessor>();
+
+                cls.SaveEmployee(employee);
+
+                mock.Mock<IEmployeeDataAccess>()
+                    .Verify(x => x.SaveEmployee(employee, sql), Times.Exactly(1));
             }
         }
 

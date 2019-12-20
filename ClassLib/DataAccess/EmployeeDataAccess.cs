@@ -17,5 +17,13 @@ namespace ClassLib.DataAccess
                 return output.ToList();
             }
         }
+
+        public void SaveEmployee(Employee employee, string sql)
+        {
+            using (IDbConnection conn = new SqlConnection("MyConnection"))
+            {
+                conn.Execute(sql, new { employee.Id, employee.FirstName, employee.LastName, employee.Occupation });
+            }
+        }
     }
 }

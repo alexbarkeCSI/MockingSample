@@ -6,5 +6,6 @@ namespace ClassLib.Logic
     public interface IEmployeeProcessor
     {
         List<Employee> GetEmployees();
+        void SaveEmployee(Employee employee);
     }
 }
