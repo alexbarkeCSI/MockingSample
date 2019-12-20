@@ -94,6 +94,29 @@ namespace MockingSample.Tests
             }
         }
 
+        [Fact]
+        public void Delete_Employee_ValidCall()
+        {
+            using (AutoMock mock = AutoMock.GetLoose())
+            {
+                Employee employee = GetSampleEmployees().First();
+                const string sql = "DELETE FROM Employee WHERE Id = @Id";
+                // setup mocked environment
+                mock.Mock<IEmployeeDataAccess>()
+                    .Setup(x => x.DeleteEmployee(employee, sql));
+
+                // create the actual class to run the employee get method
+                EmployeeProcessor cls = mock.Create<EmployeeProcessor>();
+
+                // run update command
+                cls.DeleteEmployee(employee);
+
+                // verify was run once
+                mock.Mock<IEmployeeDataAccess>()
+                    .Verify(x => x.DeleteEmployee(employee, sql), Times.Exactly(1));
+            }
+        }
+
         private static List<Employee> GetSampleEmployees()
         {
             return new List<Employee>

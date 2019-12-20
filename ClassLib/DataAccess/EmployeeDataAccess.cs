@@ -7,6 +7,10 @@ using Dapper;
 
 namespace ClassLib.DataAccess
 {
+    /// <summary>
+    /// Please note that MyConnection is not necessary here since we are just explaining how to
+    /// do mocks.  In a real app, I would have a connection string
+    /// </summary>
     public class EmployeeDataAccess : IEmployeeDataAccess
     {
         public List<Employee> LoadEmployees(string sql)
@@ -31,6 +35,14 @@ namespace ClassLib.DataAccess
             using (IDbConnection conn = new SqlConnection("MyConnection"))
             {
                 conn.Execute(sql, new { employee.Id, employee.FirstName, employee.LastName, employee.Occupation });
+            }
+        }
+
+        public void DeleteEmployee(Employee employee, string sql)
+        {
+            using (IDbConnection conn = new SqlConnection("MyConnection"))
+            {
+                conn.Execute(sql, new { employee.Id });
             }
         }
     }

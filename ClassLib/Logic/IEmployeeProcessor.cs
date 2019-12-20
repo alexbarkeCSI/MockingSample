@@ -8,5 +8,6 @@ namespace ClassLib.Logic
         List<Employee> GetEmployees();
         void SaveEmployee(Employee employee);
         void UpdateEmployee(Employee employee);
+        void DeleteEmployee(Employee employee);
     }
 }

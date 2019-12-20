@@ -32,5 +32,12 @@ namespace ClassLib.Logic
 
             _dataAccess.UpdateEmployee(employee, sql);
         }
+
+        public void DeleteEmployee(Employee employee)
+        {
+            const string sql = "DELETE FROM Employee WHERE Id = @Id";
+
+            _dataAccess.DeleteEmployee(employee, sql);
+        }
     }
 }
