@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xunit;
 using Moq;
 using Autofac.Extras.Moq;
+using Castle.Components.DictionaryAdapter.Xml;
 using ClassLib.DataAccess;
 using ClassLib.Logic;
 using ClassLib.Models;
@@ -116,6 +117,39 @@ namespace MockingSample.Tests
                     .Verify(x => x.DeleteEmployee(employee, sql), Times.Exactly(1));
             }
         }
+
+        [Theory]
+        [InlineData("d1503281-dc30-4bf1-89af-13f5b5ac8cbc", "", "", "")]
+        [InlineData("cefadf1c-1da4-4342-8710-41c375a83507", "", "", null)]
+        [InlineData("00000000-0000-0000-0000-000000000000", "", null, "")]
+        [InlineData("00000000-0000-0000-0000-000000000000", null, "", "")]
+        [InlineData("c5320cae-906f-430d-9071-17cd4a78e153", null, "", "")]
+        public void Create_Employee_Fails_With_Bad_Inputs(string guidAsString, string firstName, string lastName, string occupation)
+        {
+            EmployeeProcessor employeeProcessor = new EmployeeProcessor(null);
+
+            Assert.Throws<ArgumentException>(() =>
+                employeeProcessor.CreateEmployee(Guid.Parse(guidAsString), firstName, lastName, occupation));
+        }
+
+        [Theory]
+        [InlineData("d1503281-dc30-4bf1-89af-13f5b5ac8cbc", "Alex", "Barke", "Testing Idiot")]
+        [InlineData("d1503281-dc30-4bf1-89af-13f5b5ac8cbc", "Darren", "Chan", "Testing Denial Expert Coder")]
+        public void Create_Employee_Passes_With_Good_Inputs(string guidAsString, string firstName, string lastName, string occupation)
+        {
+            EmployeeProcessor employeeProcessor = new EmployeeProcessor(null);
+
+            Employee expected = new Employee(Guid.Parse(guidAsString), firstName, lastName, occupation);
+
+            Employee actual = employeeProcessor.CreateEmployee(Guid.Parse(guidAsString), firstName, lastName, occupation);
+
+            Assert.NotNull(actual);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.FirstName, actual.FirstName);
+            Assert.Equal(expected.LastName, actual.LastName);
+            Assert.Equal(expected.Occupation, actual.Occupation);
+        }
+
 
         private static List<Employee> GetSampleEmployees()
         {

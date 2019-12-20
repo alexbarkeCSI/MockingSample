@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ClassLib.DataAccess;
 using ClassLib.Models;
 
@@ -17,6 +18,31 @@ namespace ClassLib.Logic
             const string sql = "SELECT * FROM Employee";
 
             return _dataAccess.LoadEmployees(sql);
+        }
+
+        public Employee CreateEmployee(Guid id, string firstName, string lastName, string occupation)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Employee Id cannot be empty", nameof(id));
+            }
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                throw new ArgumentException("Employee FirstName cannot be empty or null", nameof(firstName));
+            }
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                throw new ArgumentException("Employee LastName cannot be empty or null", nameof(lastName));
+            }
+
+            if (string.IsNullOrEmpty(occupation))
+            {
+                throw new ArgumentException("Employee Occupation cannot be empty or null", nameof(occupation));
+            }
+
+            return new Employee(id, firstName, lastName, occupation);
         }
 
         public void SaveEmployee(Employee employee)

@@ -13,5 +13,13 @@ namespace ClassLib.Models
         {
             
         }
+
+        public Employee(Guid id, string firstName, string lastName, string occupation)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Occupation = occupation;
+        }
     }
 }
