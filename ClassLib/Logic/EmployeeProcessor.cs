@@ -25,5 +25,12 @@ namespace ClassLib.Logic
 
             _dataAccess.SaveEmployee(employee, sql);
         }
+
+        public void UpdateEmployee(Employee employee)
+        {
+            const string sql = "UPDATE Employee Set FirstName = @FirstName, LastName = @LastName, Occupation = @Occupation WHERE Id = @Id";
+
+            _dataAccess.UpdateEmployee(employee, sql);
+        }
     }
 }

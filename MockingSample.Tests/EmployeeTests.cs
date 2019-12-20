@@ -18,7 +18,7 @@ namespace MockingSample.Tests
         [Fact]
         public void Get_Employees_ValidCall()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (AutoMock mock = AutoMock.GetLoose())
             {
                 // setup mocked environment
                 mock.Mock<IEmployeeDataAccess>()
@@ -26,7 +26,7 @@ namespace MockingSample.Tests
                     .Returns(GetSampleEmployees());
 
                 // create the actual class to run the employee get method
-                var cls = mock.Create<EmployeeProcessor>();
+                EmployeeProcessor cls = mock.Create<EmployeeProcessor>();
 
                 // get sample expected data
                 var expected = GetSampleEmployees();
@@ -51,21 +51,46 @@ namespace MockingSample.Tests
         [Fact]
         public void Save_Employee_ValidCall()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (AutoMock mock = AutoMock.GetLoose())
             {
-                var employee = GetSampleEmployees().First();
-                var sql = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Occupation)";
+                Employee employee = GetSampleEmployees().First();
+                const string sql = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Occupation)";
                 // setup mocked environment
                 mock.Mock<IEmployeeDataAccess>()
                     .Setup(x => x.SaveEmployee(employee, sql));
 
                 // create the actual class to run the employee get method
-                var cls = mock.Create<EmployeeProcessor>();
+                EmployeeProcessor cls = mock.Create<EmployeeProcessor>();
 
+                // run save employee
                 cls.SaveEmployee(employee);
 
+                // verify was run once
                 mock.Mock<IEmployeeDataAccess>()
                     .Verify(x => x.SaveEmployee(employee, sql), Times.Exactly(1));
+            }
+        }
+
+        [Fact]
+        public void Update_Employee_ValidCall()
+        {
+            using (AutoMock mock = AutoMock.GetLoose())
+            {
+                Employee employee = GetSampleEmployees().First();
+                const string sql = "UPDATE Employee Set FirstName = @FirstName, LastName = @LastName, Occupation = @Occupation WHERE Id = @Id";
+                // setup mocked environment
+                mock.Mock<IEmployeeDataAccess>()
+                    .Setup(x => x.UpdateEmployee(employee, sql));
+
+                // create the actual class to run the employee get method
+                EmployeeProcessor cls = mock.Create<EmployeeProcessor>();
+
+                // run update command
+                cls.UpdateEmployee(employee);
+
+                // verify was run once
+                mock.Mock<IEmployeeDataAccess>()
+                    .Verify(x => x.UpdateEmployee(employee, sql), Times.Exactly(1));
             }
         }
 

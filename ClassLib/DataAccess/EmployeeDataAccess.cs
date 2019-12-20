@@ -25,5 +25,13 @@ namespace ClassLib.DataAccess
                 conn.Execute(sql, new { employee.Id, employee.FirstName, employee.LastName, employee.Occupation });
             }
         }
+
+        public void UpdateEmployee(Employee employee, string sql)
+        {
+            using (IDbConnection conn = new SqlConnection("MyConnection"))
+            {
+                conn.Execute(sql, new { employee.Id, employee.FirstName, employee.LastName, employee.Occupation });
+            }
+        }
     }
 }
